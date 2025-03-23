@@ -1,0 +1,17 @@
+[en]
+
+PLAYER_JOIN = %s &x06%s &x01has joined the server.
+PLAYER_JOIN_ADMIN = %s &x06%s &x01has joined the server. &x04[Administrator]
+PLAYER_LEAVE = %s &x06%s &x01has left the server.
+
+[bp]
+
+PLAYER_JOIN = %s &x06%s &x01entrou no servidor.
+PLAYER_JOIN_ADMIN = %s &x06%s &x01entrou no servidor. &x04[Administrador]
+PLAYER_LEAVE = %s &x06%s &x01saiu do servidor.
+
+[pt]
+
+PLAYER_JOIN = %s &x06%s &x01juntou-se ao servidor.
+PLAYER_JOIN_ADMIN = %s &x06%s &x01juntou-se ao servidor. &x04[Administrador]
+PLAYER_LEAVE = %s &x06%s &x01saiu do servidor.
