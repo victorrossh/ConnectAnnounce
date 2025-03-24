@@ -9,6 +9,9 @@
 
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	
+	// Chat prefix
+	CC_SetPrefix("&x04[FWO]");
 }
 
 public plugin_cfg() {
@@ -16,65 +19,72 @@ public plugin_cfg() {
 }
 
 public client_putinserver(id) { 
-	set_task(5.0, "CheckPlayerConnect", id + TASK_CHECK_CONNECT);
+	set_task(3.0, "CheckPlayerConnect", id + TASK_CHECK_CONNECT);
 }
 
 public CheckPlayerConnect(id) {
 	id -= TASK_CHECK_CONNECT;
 	
 	if (!is_user_connected(id) || is_user_bot(id)) {
-		remove_task(id+TASK_CHECK_CONNECT)
+		remove_task(id + TASK_CHECK_CONNECT);
 		return;
 	}
 	
-	new name[32], country[8], tag[16];
+	new name[32], city[32], region[32], country[32], steam[16];
 	get_user_name(id, name, charsmax(name));
 	
 	new ip[32];
 	get_user_ip(id, ip, charsmax(ip), 1);
-	geoip_country_ex(ip, country, charsmax(country));
 	
-	if (country[0] == EOS) {
-		copy(country, charsmax(country), "Unknow");
-	} else {
-		new len = strlen(country);
-		if (len > 2) {
-			country[2] = EOS;
-		}
-		strtoupper(country);
-	}
+	new city_ret = geoip_city(ip, city, charsmax(city), 0);
+	new region_ret = geoip_region_name(ip, region, charsmax(region), 0);
+	new country_ret = geoip_country_ex(ip, country, charsmax(country), 0);
 	
-	formatex(tag, charsmax(tag), "&x04[%s]", country);
+	server_print("GeoIP - Player: %s, IP: %s, City: %s (ret: %d), Region: %s (ret: %d), Country: %s (ret: %d)", name, ip, city, city_ret, region, region_ret, country, country_ret);
+				 
+	// If the city, region, or country information is not detected (value 0), set it to "Unknown"
+	if (city[0] == EOS) copy(city, charsmax(city), "Unknown");
+	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
+	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
+	
+	// Check if it's Steam using the authid
+	new authid[40];
+	get_user_authid(id, authid, charsmax(authid));
+	formatex(steam, charsmax(steam), "%s", containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
 	
 	if (get_user_flags(id) & ADMIN_BAN) {
-		CC_SendMessage(0, "%l", "PLAYER_JOIN_ADMIN", tag, name);
+		CC_SendMessage(0, "%l", "PLAYER_JOIN_ADMIN", name, city, region, country, steam);
 	} else {
-		CC_SendMessage(0, "%l", "PLAYER_JOIN", tag, name);
+		CC_SendMessage(0, "%l", "PLAYER_JOIN", name, city, region, country, steam);
 	}
 }
 
 public client_disconnected(id) {   
-	if (is_user_bot(id) || (task_exists(id + TASK_CHECK_CONNECT) && remove_task(id + TASK_CHECK_CONNECT))) {
-		return;
-	}
+	if (is_user_bot(id)) return;
 	
-	new name[32], country[8], tag[16];
+	task_exists(id + TASK_CHECK_CONNECT) && remove_task(id + TASK_CHECK_CONNECT);
+	
+	new name[32], city[32], region[32], country[32], steam[16];
 	get_user_name(id, name, charsmax(name));
 	
 	new ip[32];
 	get_user_ip(id, ip, charsmax(ip), 1);
-	geoip_country_ex(ip, country, charsmax(country));
 	
-	if (country[0] == EOS) {
-		copy(country, charsmax(country), "Unknow");
-	} else {
-		new len = strlen(country);
-		if (len > 2) {
-			country[2] = EOS;
-		}
-		strtoupper(country);
-	}
+	new city_ret = geoip_city(ip, city, charsmax(city), 0);
+	new region_ret = geoip_region_name(ip, region, charsmax(region), 0);
+	new country_ret = geoip_country_ex(ip, country, charsmax(country), 0);
 	
-	formatex(tag, charsmax(tag), "&x04[%s]", country);
-	CC_SendMessage(0, "%l", "PLAYER_LEAVE", tag, name);
+	server_print("GeoIP - Player: %s, IP: %s, City: %s (ret: %d), Region: %s (ret: %d), Country: %s (ret: %d)", name, ip, city, city_ret, region, region_ret, country, country_ret);
+	
+	// If the city, region, or country information is not detected (value 0), set it to "Unknown"
+	if (city[0] == EOS) copy(city, charsmax(city), "Unknown");
+	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
+	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
+	
+	// Check if it's Steam using the authid
+	new authid[40];
+	get_user_authid(id, authid, charsmax(authid));
+	formatex(steam, charsmax(steam), "%s", containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
+	
+	CC_SendMessage(0, "%l", "PLAYER_LEAVE", name, city, region, country, steam);
 }

@@ -1,17 +1,17 @@
 [en]
 
-PLAYER_JOIN = %s &x06%s &x01has joined the server.
-PLAYER_JOIN_ADMIN = %s &x06%s &x01has joined the server. &x04[Administrator]
-PLAYER_LEAVE = %s &x06%s &x01has left the server.
+PLAYER_JOIN = &x06%s &x01connected from &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01].
+PLAYER_JOIN_ADMIN = &x06%s &x01connected from &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] &x01[&x04Administrator&x01].
+PLAYER_LEAVE = &x06%s &x01disconnected from &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01].
 
 [bp]
 
-PLAYER_JOIN = %s &x06%s &x01entrou no servidor.
-PLAYER_JOIN_ADMIN = %s &x06%s &x01entrou no servidor. &x04[Administrador]
-PLAYER_LEAVE = %s &x06%s &x01saiu do servidor.
+PLAYER_JOIN = &x06%s &x01conectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01].
+PLAYER_JOIN_ADMIN = &x06%s &x01conectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] &x01[&x04Administrator&x01].
+PLAYER_LEAVE = &x06%s &x01desconectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01].
 
 [pt]
 
-PLAYER_JOIN = %s &x06%s &x01juntou-se ao servidor.
-PLAYER_JOIN_ADMIN = %s &x06%s &x01juntou-se ao servidor. &x04[Administrador]
-PLAYER_LEAVE = %s &x06%s &x01saiu do servidor.
+PLAYER_JOIN = &x06%s &x01conectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01].
+PLAYER_JOIN_ADMIN = &x06%s &x01conectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] &x01[&x04Administrator&x01].
+PLAYER_LEAVE = &x06%s &x01desconectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01].
