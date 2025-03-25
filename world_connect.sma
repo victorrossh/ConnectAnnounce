@@ -36,11 +36,11 @@ public CheckPlayerConnect(id) {
 	new ip[32];
 	get_user_ip(id, ip, charsmax(ip), 1);
 	
-	new city_ret = geoip_city(ip, city, charsmax(city), 0);
-	new region_ret = geoip_region_name(ip, region, charsmax(region), 0);
-	new country_ret = geoip_country_ex(ip, country, charsmax(country), 0);
+	geoip_city(ip, city, charsmax(city), 0);
+	geoip_region_name(ip, region, charsmax(region), 0);
+	geoip_country_ex(ip, country, charsmax(country), 0);
 	
-	server_print("GeoIP - Player: %s, IP: %s, City: %s (ret: %d), Region: %s (ret: %d), Country: %s (ret: %d)", name, ip, city, city_ret, region, region_ret, country, country_ret);
+	server_print("GeoIP - Player: %s, IP: %s, City: %s, Region: %s, Country: %s", name, ip, city, region, country);
 				 
 	// If the city, region, or country information is not detected (value 0), set it to "Unknown"
 	if (city[0] == EOS) copy(city, charsmax(city), "Unknown");
@@ -70,11 +70,11 @@ public client_disconnected(id) {
 	new ip[32];
 	get_user_ip(id, ip, charsmax(ip), 1);
 	
-	new city_ret = geoip_city(ip, city, charsmax(city), 0);
-	new region_ret = geoip_region_name(ip, region, charsmax(region), 0);
-	new country_ret = geoip_country_ex(ip, country, charsmax(country), 0);
+	geoip_city(ip, city, charsmax(city), 0);
+	geoip_region_name(ip, region, charsmax(region), 0);
+	geoip_country_ex(ip, country, charsmax(country), 0);
 	
-	server_print("GeoIP - Player: %s, IP: %s, City: %s (ret: %d), Region: %s (ret: %d), Country: %s (ret: %d)", name, ip, city, city_ret, region, region_ret, country, country_ret);
+	server_print("GeoIP - Player: %s, IP: %s, City: %s, Region: %s, Country: %s", name, ip, city, region, country);
 	
 	// If the city, region, or country information is not detected (value 0), set it to "Unknown"
 	if (city[0] == EOS) copy(city, charsmax(city), "Unknown");
