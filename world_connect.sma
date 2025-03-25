@@ -7,6 +7,17 @@
 #define AUTHOR "ftl~"
 #define TASK_CHECK_CONNECT 1000
 
+// Enum that stores the name of each language
+new const g_szCargos[][] = {
+	"PLAYER_JOIN",             // Index 0: Normal player
+	"PLAYER_JOIN_HELPER",      // Index 1: Helper
+	"PLAYER_JOIN_MOD",         // Index 2: Moderator
+	"PLAYER_JOIN_SUPER_MOD",   // Index 3: Super-Moderator
+	"PLAYER_JOIN_ADMIN",       // Index 4: Administrator
+	"PLAYER_JOIN_CO_OWNER",    // Index 5: Co-Owner
+	"PLAYER_JOIN_OWNER"        // Index 6: Owner
+};
+
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
@@ -41,7 +52,7 @@ public CheckPlayerConnect(id) {
 	geoip_country_ex(ip, country, charsmax(country), 0);
 	
 	server_print("GeoIP - Player: %s, IP: %s, City: %s, Region: %s, Country: %s", name, ip, city, region, country);
-				 
+	
 	// If the city, region, or country information is not detected (value 0), set it to "Unknown"
 	if (city[0] == EOS) copy(city, charsmax(city), "Unknown");
 	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
@@ -52,11 +63,17 @@ public CheckPlayerConnect(id) {
 	get_user_authid(id, authid, charsmax(authid));
 	formatex(steam, charsmax(steam), "%s", containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
 	
-	if (get_user_flags(id) & ADMIN_BAN) {
-		CC_SendMessage(0, "%l", "PLAYER_JOIN_ADMIN", name, city, region, country, steam);
-	} else {
-		CC_SendMessage(0, "%l", "PLAYER_JOIN", name, city, region, country, steam);
-	}
+	// Check player flag
+	new flags = get_user_flags(id);
+	
+	new cargo = (flags & ADMIN_CFG) ? 6 :              // Owner (flag h)
+				(flags & ADMIN_IMMUNITY) ? 5 :         // Co-Owner (flag a)
+				(flags & ADMIN_CVAR) ? 4 :             // Administrator (flag g)
+				(flags & ADMIN_BAN_TEMP) ? 3 :         // Super-Moderator (flag v)
+				(flags & ADMIN_BAN) ? 2 :              // Moderator (flag d)
+				(flags & ADMIN_RESERVATION) ? 1 : 0;   // Helper (flag b), if not, normal player
+	
+	CC_SendMessage(0, "%l", g_szCargos[cargo], name, city, region, country, steam);
 }
 
 public client_disconnected(id) {   
