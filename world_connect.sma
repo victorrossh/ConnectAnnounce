@@ -84,7 +84,7 @@ public CheckPlayerConnect(id) {
 		} else {
 			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
 		}
-		CC_SendMessage(target, "%l", "PLAYER_JOIN", name, city, region, country, steam, role_text);
+		CC_SendMessage(target, "%L", target, "PLAYER_JOIN", name, city, region, country, steam, role_text);
 	}
 }
 
