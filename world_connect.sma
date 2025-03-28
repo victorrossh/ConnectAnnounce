@@ -1,7 +1,6 @@
 #include <amxmodx>
 #include <geoip>
 #include <cromchat2>
-#include <lang>
 
 #define PLUGIN "Connect Announce"
 #define VERSION "1.0"
