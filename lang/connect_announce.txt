@@ -20,6 +20,17 @@ ROLE_SUPER_MOD = [&x04Super-Moderador&x01]
 ROLE_MOD = [&x04Moderador&x01]
 ROLE_HELPER = [&x04Ajudante&x01]
 
+[ro]
+
+PLAYER_JOIN = &x06%s &x01s-a conectat din &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] %s
+PLAYER_LEAVE = &x06%s &x01s-a deconectat din &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01]
+ROLE_OWNER = [&x04Proprietar&x01]
+ROLE_CO_OWNER = [&x04Co-Proprietar&x01]
+ROLE_ADMIN = [&x04Administrator&x01]
+ROLE_SUPER_MOD = [&x04Super-Moderator&x01]
+ROLE_MOD = [&x04Moderator&x01]
+ROLE_HELPER = [&x04Ajutor&x01]
+
 [pt]
 
 PLAYER_JOIN = &x06%s &x01conectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] %s
