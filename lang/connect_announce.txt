@@ -1,43 +1,43 @@
 [en]
 
-PLAYER_JOIN = &x06%s &x01connected from &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] %s
-PLAYER_LEAVE = &x06%s &x01disconnected from &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01]
-ROLE_OWNER = [&x04Owner&x01]
-ROLE_CO_OWNER = [&x04Co-Owner&x01]
-ROLE_ADMIN = [&x04Administrator&x01]
-ROLE_SUPER_MOD = [&x04Super-Moderator&x01]
-ROLE_MOD = [&x04Moderator&x01]
-ROLE_HELPER = [&x04Helper&x01]
+PLAYER_JOIN = &x06%s &x01connected from %s %s
+PLAYER_LEAVE = &x06%s &x01disconnected from %s
+ROLE_OWNER = Owner
+ROLE_CO_OWNER = Co-Owner
+ROLE_ADMIN = Administrator
+ROLE_SUPER_MOD = Super-Moderator
+ROLE_MOD = Moderator
+ROLE_HELPER = Helper
 
 [bp]
 
-PLAYER_JOIN = &x06%s &x01conectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] %s
-PLAYER_LEAVE = &x06%s &x01desconectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01]
-ROLE_OWNER = [&x04Dono&x01]
-ROLE_CO_OWNER = [&x04Sub-Dono&x01]
-ROLE_ADMIN = [&x04Administrador&x01]
-ROLE_SUPER_MOD = [&x04Super-Moderador&x01]
-ROLE_MOD = [&x04Moderador&x01]
-ROLE_HELPER = [&x04Ajudante&x01]
+PLAYER_JOIN = &x06%s &x01conectou-se de %s %s
+PLAYER_LEAVE = &x06%s &x01desconectou-se de %s
+ROLE_OWNER = Dono
+ROLE_CO_OWNER = Sub-Dono
+ROLE_ADMIN = Administrador
+ROLE_SUPER_MOD = Super-Moderador
+ROLE_MOD = Moderador
+ROLE_HELPER = Ajudante
 
 [ro]
 
-PLAYER_JOIN = &x06%s &x01s-a conectat din &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] %s
-PLAYER_LEAVE = &x06%s &x01s-a deconectat din &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01]
-ROLE_OWNER = [&x04Proprietar&x01]
-ROLE_CO_OWNER = [&x04Co-Proprietar&x01]
-ROLE_ADMIN = [&x04Administrator&x01]
-ROLE_SUPER_MOD = [&x04Super-Moderator&x01]
-ROLE_MOD = [&x04Moderator&x01]
-ROLE_HELPER = [&x04Ajutor&x01]
+PLAYER_JOIN = &x06%s &x01s-a conectat din %s %s
+PLAYER_LEAVE = &x06%s &x01s-a deconectat din %s
+ROLE_OWNER = Proprietar
+ROLE_CO_OWNER = Co-Proprietar
+ROLE_ADMIN = Administrator
+ROLE_SUPER_MOD = Super-Moderator
+ROLE_MOD = Moderator
+ROLE_HELPER = Ajutor
 
 [pt]
 
-PLAYER_JOIN = &x06%s &x01conectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01] %s
-PLAYER_LEAVE = &x06%s &x01desconectou-se de &x01[&x04%s, %s, %s&x01] &x01[&x04%s&x01]
-ROLE_OWNER = [&x04Dono&x01]
-ROLE_CO_OWNER = [&x04Sub-Dono&x01]
-ROLE_ADMIN = [&x04Administrador&x01]
-ROLE_SUPER_MOD = [&x04Super-Moderador&x01]
-ROLE_MOD = [&x04Moderador&x01]
-ROLE_HELPER = [&x04Ajudante&x01]
+PLAYER_JOIN = &x06%s &x01conectou-se de %s %s
+PLAYER_LEAVE = &x06%s &x01desconectou-se de %s
+ROLE_OWNER = Dono
+ROLE_CO_OWNER = Sub-Dono
+ROLE_ADMIN = Administrador
+ROLE_SUPER_MOD = Super-Moderador
+ROLE_MOD = Moderador
+ROLE_HELPER = Ajudante

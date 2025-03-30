@@ -18,11 +18,20 @@ new const g_szRoleKeys[][] = {
 	"ROLE_OWNER"        // Index 6: Owner
 };
 
+new cvar_msg_city, cvar_msg_region, cvar_msg_country, cvar_msg_steam, cvar_msg_role;
+
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
 	// Chat prefix
 	CC_SetPrefix("&x04[FWO]");
+	
+	// Register CVARs
+	cvar_msg_city = register_cvar("msg_show_city", "1");        // 1 = show city, 0 = hide
+	cvar_msg_region = register_cvar("msg_show_region", "1");    // 1 = show region, 0 = hide
+	cvar_msg_country = register_cvar("msg_show_country", "1");  // 1 = show country, 0 = hide
+	cvar_msg_steam = register_cvar("msg_show_steam", "1");      // 1 = show steam, 0 = hide
+	cvar_msg_role = register_cvar("msg_show_role", "1");        // 1 = show role, 0 = hide
 }
 
 public plugin_cfg() {
@@ -61,7 +70,7 @@ public CheckPlayerConnect(id) {
 	// Check if it's Steam using the authid
 	new authid[40];
 	get_user_authid(id, authid, charsmax(authid));
-	formatex(steam, charsmax(steam), "%s", containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
+	copy(steam, charsmax(steam), containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
 	
 	// Check player flag
 	new flags = get_user_flags(id);
@@ -75,15 +84,71 @@ public CheckPlayerConnect(id) {
 		
 	new players[32], num;
 	get_players(players, num, "ch"); // Ignore the bots
-	new role_text[32];
+	new role_text[64], location[128], extra[64];
 	for (new i = 0; i < num; i++) {
 		new target = players[i];
-		if (role == 0) {
-			role_text[0] = EOS;
-		} else {
-			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
+		
+		location[0] = EOS;
+		if (get_pcvar_num(cvar_msg_city)) {
+			copy(location, charsmax(location), "&x04");
+			add(location, charsmax(location), city);
+			add(location, charsmax(location), "&x01");
 		}
-		CC_SendMessage(target, "%L", target, "PLAYER_JOIN", name, city, region, country, steam, role_text);
+		if (get_pcvar_num(cvar_msg_region)) {
+			if (location[0]) {
+				add(location, charsmax(location), "&x01, ");
+				add(location, charsmax(location), "&x04");
+				add(location, charsmax(location), region);
+				add(location, charsmax(location), "&x01");
+			} else {
+				copy(location, charsmax(location), "&x04");
+				add(location, charsmax(location), region);
+				add(location, charsmax(location), "&x01");
+			}
+		}
+		if (get_pcvar_num(cvar_msg_country)) {
+			if (location[0]) {
+				add(location, charsmax(location), "&x01, ");
+				add(location, charsmax(location), "&x04");
+				add(location, charsmax(location), country);
+				add(location, charsmax(location), "&x01");
+			} else {
+				copy(location, charsmax(location), "&x04");
+				add(location, charsmax(location), country);
+				add(location, charsmax(location), "&x01");
+			}
+		}
+		if (location[0]) {
+			new temp[128];
+			copy(temp, charsmax(temp), location);
+			copy(location, charsmax(location), "&x01[");
+			add(location, charsmax(location), temp);
+			add(location, charsmax(location), "&x01]");
+		}
+		
+		extra[0] = EOS;
+		if (get_pcvar_num(cvar_msg_steam)) {
+			copy(extra, charsmax(extra), "&x01[&x04");
+			add(extra, charsmax(extra), steam);
+			add(extra, charsmax(extra), "&x01]");
+		}
+		if (role != 0 && get_pcvar_num(cvar_msg_role)) {
+			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
+			replace_all(role_text, charsmax(role_text), "&x04", "");
+			replace_all(role_text, charsmax(role_text), "&x01", "");
+			new temp_role[64];
+			copy(temp_role, charsmax(temp_role), "&x01[&x04");
+			add(temp_role, charsmax(temp_role), role_text);
+			add(temp_role, charsmax(temp_role), "&x01]");
+			if (extra[0]) {
+				add(extra, charsmax(extra), " ");
+				add(extra, charsmax(extra), temp_role);
+			} else {
+				copy(extra, charsmax(extra), temp_role);
+			}
+		}
+		
+		CC_SendMessage(target, "%L", target, "PLAYER_JOIN", name, location, extra);
 	}
 }
 
@@ -112,7 +177,52 @@ public client_disconnected(id) {
 	// Check if it's Steam using the authid
 	new authid[40];
 	get_user_authid(id, authid, charsmax(authid));
-	formatex(steam, charsmax(steam), "%s", containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
+	copy(steam, charsmax(steam), containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
 	
-	CC_SendMessage(0, "%l", "PLAYER_LEAVE", name, city, region, country, steam);
+	new players[32], num;
+	get_players(players, num, "ch");
+	new location[128];
+	for (new i = 0; i < num; i++) {
+		new target = players[i];
+		
+		location[0] = EOS;
+		if (get_pcvar_num(cvar_msg_city)) {
+			copy(location, charsmax(location), "&x04");
+			add(location, charsmax(location), city);
+			add(location, charsmax(location), "&x01");
+		}
+		if (get_pcvar_num(cvar_msg_region)) {
+			if (location[0]) {
+				add(location, charsmax(location), "&x01, ");
+				add(location, charsmax(location), "&x04");
+				add(location, charsmax(location), region);
+				add(location, charsmax(location), "&x01");
+			} else {
+				copy(location, charsmax(location), "&x04");
+				add(location, charsmax(location), region);
+				add(location, charsmax(location), "&x01");
+			}
+		}
+		if (get_pcvar_num(cvar_msg_country)) {
+			if (location[0]) {
+				add(location, charsmax(location), "&x01, ");
+				add(location, charsmax(location), "&x04");
+				add(location, charsmax(location), country);
+				add(location, charsmax(location), "&x01");
+			} else {
+				copy(location, charsmax(location), "&x04");
+				add(location, charsmax(location), country);
+				add(location, charsmax(location), "&x01");
+			}
+		}
+		if (location[0]) {
+			new temp[128];
+			copy(temp, charsmax(temp), location);
+			copy(location, charsmax(location), "&x01[");
+			add(location, charsmax(location), temp);
+			add(location, charsmax(location), "&x01]");
+		}
+		
+		CC_SendMessage(target, "%L", target, "PLAYER_LEAVE", name, location);
+	}
 }
