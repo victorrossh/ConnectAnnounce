@@ -73,6 +73,7 @@ public CheckPlayerConnect(id) {
 	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
 	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
 	
+	// Check if it's Steam using Reunion (REU_GetAuthtype)
 	switch (REU_GetAuthtype(id)) {
 		case CA_TYPE_STEAM: {
 			formatex(steam, charsmax(steam), "Steam");
@@ -168,6 +169,7 @@ public client_disconnected(id) {
 	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
 	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
 	
+	// Check if it's Steam using Reunion (REU_GetAuthtype)
 	switch (REU_GetAuthtype(id)) {
 		case CA_TYPE_STEAM: {
 			formatex(steam, charsmax(steam), "Steam");
@@ -177,9 +179,19 @@ public client_disconnected(id) {
 		}
 	}
 	
+	// Check player flag
+	new flags = get_user_flags(id);
+	
+	new role = (flags & ADMIN_CFG) ? 6 :               // Owner (flag h)
+			   (flags & ADMIN_IMMUNITY) ? 5 :         // Co-Owner (flag a)
+			   (flags & ADMIN_CVAR) ? 4 :             // Administrator (flag g)
+			   (flags & ADMIN_BAN_TEMP) ? 3 :         // Super-Moderator (flag v)
+			   (flags & ADMIN_BAN) ? 2 :              // Moderator (flag d)
+			   (flags & ADMIN_RESERVATION) ? 1 : 0;   // Helper (flag b), if not, normal player
+	
 	new players[32], num;
-	get_players(players, num, "ch");
-	new location[128];
+	get_players(players, num, "ch"); // Ignore the bots
+	new role_text[64], location[128];
 	for (new i = 0; i < num; i++) {
 		new target = players[i];
 		
@@ -207,7 +219,10 @@ public client_disconnected(id) {
 		}
 		
 		new steam_open[2], steam_value[32], steam_close[2];
+		new role_open[2], role_value[64], role_close[2];
+		
 		steam_open[0] = steam_value[0] = steam_close[0] = EOS;
+		role_open[0] = role_value[0] = role_close[0] = EOS;
 		
 		if (get_pcvar_num(cvar_msg_steam)) {
 			copy(steam_open, charsmax(steam_open), "[");
@@ -215,6 +230,13 @@ public client_disconnected(id) {
 			copy(steam_close, charsmax(steam_close), "]");
 		}
 		
-		CC_SendMessage(target, "%L", target, "PLAYER_LEAVE", name, location[0] ? location : "", steam_open, steam_value, steam_close);
+		if (role != 0 && get_pcvar_num(cvar_msg_role)) {
+			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
+			copy(role_open, charsmax(role_open), "[");
+			copy(role_value, charsmax(role_value), role_text);
+			copy(role_close, charsmax(role_close), "]");
+		}
+		
+		CC_SendMessage(target, "%L", target, "PLAYER_LEAVE", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
 	}
 }
