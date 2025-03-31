@@ -19,8 +19,13 @@ new const g_szRoleKeys[][] = {
 	"ROLE_OWNER"        // Index 6: Owner
 };
 
-new cvar_msg_city, cvar_msg_region, cvar_msg_country, cvar_msg_steam, cvar_msg_role;
-new cvar_msg_show_connect, cvar_msg_show_disconnect;
+// CVARs for connection
+new cvar_msg_city_connect, cvar_msg_region_connect, cvar_msg_country_connect, cvar_msg_steam_connect, cvar_msg_role_connect;
+new cvar_msg_connect;
+
+// CVARs for disconnection
+new cvar_msg_city_disconnect, cvar_msg_region_disconnect, cvar_msg_country_disconnect, cvar_msg_steam_disconnect, cvar_msg_role_disconnect;
+new cvar_msg_disconnect;
 
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -28,14 +33,21 @@ public plugin_init() {
 	// Chat prefix
 	CC_SetPrefix("&x04[FWO]");
 	
-	// Register CVARs
-	cvar_msg_city = register_cvar("msg_show_city", "1");                   // 1 = show city, 0 = hide
-	cvar_msg_region = register_cvar("msg_show_region", "1");               // 1 = show region, 0 = hide
-	cvar_msg_country = register_cvar("msg_show_country", "1");             // 1 = show country, 0 = hide
-	cvar_msg_steam = register_cvar("msg_show_steam", "1");                 // 1 = show steam, 0 = hide
-	cvar_msg_role = register_cvar("msg_show_role", "1");                   // 1 = show role, 0 = hide
-	cvar_msg_show_connect = register_cvar("msg_show_connect", "1");        // 1 = show connect messages, 0 = hide
-	cvar_msg_show_disconnect = register_cvar("msg_show_disconnect", "1");  // 1 = show disconnect messages, 0 = hide
+	// Register CVARs for connection
+	cvar_msg_city_connect = register_cvar("msg_city_connect", "1");                  // 1 = show city in connection message, 0 = hide
+	cvar_msg_region_connect = register_cvar("msg_region_connect", "1");              // 1 = show region in connection message, 0 = hide
+	cvar_msg_country_connect = register_cvar("msg_country_connect", "1");            // 1 = show country in connection message, 0 = hide
+	cvar_msg_steam_connect = register_cvar("msg_steam_connect", "1");                // 1 = show steam status in connection message, 0 = hide
+	cvar_msg_role_connect = register_cvar("msg_role_connect", "1");                  // 1 = show role in connection message, 0 = hide
+	cvar_msg_connect = register_cvar("msg_connect", "1");                            // 1 = show connection messages, 0 = hide
+	
+	// Register CVARs for disconnection
+	cvar_msg_city_disconnect = register_cvar("msg_city_disconnect", "1");            // 1 = show city in disconnection message, 0 = hide
+	cvar_msg_region_disconnect = register_cvar("msg_region_disconnect", "1");        // 1 = show region in disconnection message, 0 = hide
+	cvar_msg_country_disconnect = register_cvar("msg_country_disconnect", "1");      // 1 = show country in disconnection message, 0 = hide
+	cvar_msg_steam_disconnect = register_cvar("msg_steam_disconnect", "1");          // 1 = show steam status in disconnection message, 0 = hide
+	cvar_msg_role_disconnect = register_cvar("msg_role_disconnect", "1");            // 1 = show role in disconnection message, 0 = hide
+	cvar_msg_disconnect = register_cvar("msg_disconnect", "1");                      // 1 = show disconnection messages, 0 = hide
 }
 
 public plugin_cfg() {
@@ -43,7 +55,7 @@ public plugin_cfg() {
 }
 
 public client_putinserver(id) { 
-	if (get_pcvar_num(cvar_msg_show_connect)) {
+	if (get_pcvar_num(cvar_msg_connect)) {
 		set_task(3.0, "CheckPlayerConnect", id + TASK_CHECK_CONNECT);
 	}
 }
@@ -100,25 +112,25 @@ public CheckPlayerConnect(id) {
 		new target = players[i];
 		
 		location[0] = EOS;
-		if (get_pcvar_num(cvar_msg_city)) {
-			if (get_pcvar_num(cvar_msg_region)) {
-				if (get_pcvar_num(cvar_msg_country)) {
+		if (get_pcvar_num(cvar_msg_city_connect)) {
+			if (get_pcvar_num(cvar_msg_region_connect)) {
+				if (get_pcvar_num(cvar_msg_country_connect)) {
 					formatex(location, charsmax(location), "%s, %s, %s", city, region, country);
 				} else {
 					formatex(location, charsmax(location), "%s, %s", city, region);
 				}
-			} else if (get_pcvar_num(cvar_msg_country)) {
+			} else if (get_pcvar_num(cvar_msg_country_connect)) {
 				formatex(location, charsmax(location), "%s, %s", city, country);
 			} else {
 				formatex(location, charsmax(location), "%s", city);
 			}
-		} else if (get_pcvar_num(cvar_msg_region)) {
-			if (get_pcvar_num(cvar_msg_country)) {
+		} else if (get_pcvar_num(cvar_msg_region_connect)) {
+			if (get_pcvar_num(cvar_msg_country_connect)) {
 				formatex(location, charsmax(location), "%s, %s", region, country);
 			} else {
 				formatex(location, charsmax(location), "%s", region);
 			}
-		} else if (get_pcvar_num(cvar_msg_country)) {
+		} else if (get_pcvar_num(cvar_msg_country_connect)) {
 			formatex(location, charsmax(location), "%s", country);
 		}
 		
@@ -128,13 +140,13 @@ public CheckPlayerConnect(id) {
 		steam_open[0] = steam_value[0] = steam_close[0] = EOS;
 		role_open[0] = role_value[0] = role_close[0] = EOS;
 		
-		if (get_pcvar_num(cvar_msg_steam)) {
+		if (get_pcvar_num(cvar_msg_steam_connect)) {
 			copy(steam_open, charsmax(steam_open), "[");
 			copy(steam_value, charsmax(steam_value), steam);
 			copy(steam_close, charsmax(steam_close), "]");
 		}
 		
-		if (role != 0 && get_pcvar_num(cvar_msg_role)) {
+		if (role != 0 && get_pcvar_num(cvar_msg_role_connect)) {
 			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
 			copy(role_open, charsmax(role_open), "[");
 			copy(role_value, charsmax(role_value), role_text);
@@ -146,7 +158,7 @@ public CheckPlayerConnect(id) {
 }
 
 public client_disconnected(id) {   
-	if (is_user_bot(id) || !get_pcvar_num(cvar_msg_show_disconnect)) {
+	if (is_user_bot(id) || !get_pcvar_num(cvar_msg_disconnect)) {
 		return;
 	}
 	
@@ -196,25 +208,25 @@ public client_disconnected(id) {
 		new target = players[i];
 		
 		location[0] = EOS;
-		if (get_pcvar_num(cvar_msg_city)) {
-			if (get_pcvar_num(cvar_msg_region)) {
-				if (get_pcvar_num(cvar_msg_country)) {
+		if (get_pcvar_num(cvar_msg_city_disconnect)) {
+			if (get_pcvar_num(cvar_msg_region_disconnect)) {
+				if (get_pcvar_num(cvar_msg_country_disconnect)) {
 					formatex(location, charsmax(location), "%s, %s, %s", city, region, country);
 				} else {
 					formatex(location, charsmax(location), "%s, %s", city, region);
 				}
-			} else if (get_pcvar_num(cvar_msg_country)) {
+			} else if (get_pcvar_num(cvar_msg_country_disconnect)) {
 				formatex(location, charsmax(location), "%s, %s", city, country);
 			} else {
 				formatex(location, charsmax(location), "%s", city);
 			}
-		} else if (get_pcvar_num(cvar_msg_region)) {
-			if (get_pcvar_num(cvar_msg_country)) {
+		} else if (get_pcvar_num(cvar_msg_region_disconnect)) {
+			if (get_pcvar_num(cvar_msg_country_disconnect)) {
 				formatex(location, charsmax(location), "%s, %s", region, country);
 			} else {
 				formatex(location, charsmax(location), "%s", region);
 			}
-		} else if (get_pcvar_num(cvar_msg_country)) {
+		} else if (get_pcvar_num(cvar_msg_country_disconnect)) {
 			formatex(location, charsmax(location), "%s", country);
 		}
 		
@@ -224,13 +236,13 @@ public client_disconnected(id) {
 		steam_open[0] = steam_value[0] = steam_close[0] = EOS;
 		role_open[0] = role_value[0] = role_close[0] = EOS;
 		
-		if (get_pcvar_num(cvar_msg_steam)) {
+		if (get_pcvar_num(cvar_msg_steam_disconnect)) {
 			copy(steam_open, charsmax(steam_open), "[");
 			copy(steam_value, charsmax(steam_value), steam);
 			copy(steam_close, charsmax(steam_close), "]");
 		}
 		
-		if (role != 0 && get_pcvar_num(cvar_msg_role)) {
+		if (role != 0 && get_pcvar_num(cvar_msg_role_disconnect)) {
 			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
 			copy(role_open, charsmax(role_open), "[");
 			copy(role_value, charsmax(role_value), role_text);
