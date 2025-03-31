@@ -1,6 +1,7 @@
 #include <amxmodx>
 #include <geoip>
 #include <cromchat2>
+#include <reapi_reunion>
 
 #define PLUGIN "Connect Announce"
 #define VERSION "1.0"
@@ -72,10 +73,14 @@ public CheckPlayerConnect(id) {
 	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
 	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
 	
-	// Check if it's Steam using the authid
-	new authid[40];
-	get_user_authid(id, authid, charsmax(authid));
-	formatex(steam, charsmax(steam), "%s", containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
+	switch (REU_GetAuthtype(id)) {
+		case CA_TYPE_STEAM: {
+			formatex(steam, charsmax(steam), "Steam");
+		}
+		default: {
+			formatex(steam, charsmax(steam), "No-Steam");
+		}
+	}
 	
 	// Check player flag
 	new flags = get_user_flags(id);
@@ -134,7 +139,7 @@ public CheckPlayerConnect(id) {
 			copy(role_value, charsmax(role_value), role_text);
 			copy(role_close, charsmax(role_close), "]");
 		}
-		
+
 		CC_SendMessage(target, "%L", target, "PLAYER_JOIN", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
 	}
 }
@@ -163,10 +168,14 @@ public client_disconnected(id) {
 	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
 	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
 	
-	// Check if it's Steam using the authid
-	new authid[40];
-	get_user_authid(id, authid, charsmax(authid));
-	formatex(steam, charsmax(steam), "%s", containi(authid, "STEAM_") == 0 ? "Steam" : "No-Steam");
+	switch (REU_GetAuthtype(id)) {
+		case CA_TYPE_STEAM: {
+			formatex(steam, charsmax(steam), "Steam");
+		}
+		default: {
+			formatex(steam, charsmax(steam), "No-Steam");
+		}
+	}
 	
 	new players[32], num;
 	get_players(players, num, "ch");
