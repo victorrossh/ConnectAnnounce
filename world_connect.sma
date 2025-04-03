@@ -2,6 +2,7 @@
 #include <geoip>
 #include <cromchat2>
 #include <reapi_reunion>
+#include <world_connect_global>
 
 #define PLUGIN "Connect Announce"
 #define VERSION "1.0"
@@ -111,28 +112,7 @@ public CheckPlayerConnect(id) {
 	for (new i = 0; i < num; i++) {
 		new target = players[i];
 		
-		location[0] = EOS;
-		if (get_pcvar_num(cvar_msg_city_connect)) {
-			if (get_pcvar_num(cvar_msg_region_connect)) {
-				if (get_pcvar_num(cvar_msg_country_connect)) {
-					formatex(location, charsmax(location), "%s, %s, %s", city, region, country);
-				} else {
-					formatex(location, charsmax(location), "%s, %s", city, region);
-				}
-			} else if (get_pcvar_num(cvar_msg_country_connect)) {
-				formatex(location, charsmax(location), "%s, %s", city, country);
-			} else {
-				formatex(location, charsmax(location), "%s", city);
-			}
-		} else if (get_pcvar_num(cvar_msg_region_connect)) {
-			if (get_pcvar_num(cvar_msg_country_connect)) {
-				formatex(location, charsmax(location), "%s, %s", region, country);
-			} else {
-				formatex(location, charsmax(location), "%s", region);
-			}
-		} else if (get_pcvar_num(cvar_msg_country_connect)) {
-			formatex(location, charsmax(location), "%s", country);
-		}
+		build_location(city, region, country, cvar_msg_city_connect, cvar_msg_region_connect, cvar_msg_country_connect, location, charsmax(location));
 		
 		new steam_open[2], steam_value[32], steam_close[2];
 		new role_open[2], role_value[64], role_close[2];
@@ -207,28 +187,7 @@ public client_disconnected(id) {
 	for (new i = 0; i < num; i++) {
 		new target = players[i];
 		
-		location[0] = EOS;
-		if (get_pcvar_num(cvar_msg_city_disconnect)) {
-			if (get_pcvar_num(cvar_msg_region_disconnect)) {
-				if (get_pcvar_num(cvar_msg_country_disconnect)) {
-					formatex(location, charsmax(location), "%s, %s, %s", city, region, country);
-				} else {
-					formatex(location, charsmax(location), "%s, %s", city, region);
-				}
-			} else if (get_pcvar_num(cvar_msg_country_disconnect)) {
-				formatex(location, charsmax(location), "%s, %s", city, country);
-			} else {
-				formatex(location, charsmax(location), "%s", city);
-			}
-		} else if (get_pcvar_num(cvar_msg_region_disconnect)) {
-			if (get_pcvar_num(cvar_msg_country_disconnect)) {
-				formatex(location, charsmax(location), "%s, %s", region, country);
-			} else {
-				formatex(location, charsmax(location), "%s", region);
-			}
-		} else if (get_pcvar_num(cvar_msg_country_disconnect)) {
-			formatex(location, charsmax(location), "%s", country);
-		}
+		build_location(city, region, country, cvar_msg_city_disconnect, cvar_msg_region_disconnect, cvar_msg_country_disconnect, location, charsmax(location));
 		
 		new steam_open[2], steam_value[32], steam_close[2];
 		new role_open[2], role_value[64], role_close[2];
