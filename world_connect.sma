@@ -138,7 +138,7 @@ public CheckPlayerConnect(id) {
 }
 
 public client_disconnected(id) {   
-	if (is_user_bot(id) || !get_pcvar_num(cvar_msg_disconnect)) {
+	if (is_user_bot(id) || !get_pcvar_num(cvar_msg_disconnect) || get_user_time(id) < 3) {
 		return;
 	}
 	
