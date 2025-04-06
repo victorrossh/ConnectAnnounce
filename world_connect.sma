@@ -115,31 +115,40 @@ public CheckPlayerConnect(id) {
 	new players[32], num;
 	get_players(players, num, "ch"); // Ignore the bots
 	new role_text[64], location[128];
+	
+	// Build location only if at least one location CVAR is enabled
+	if (!(get_pcvar_num(cvar_msg_city_connect) == 0 && get_pcvar_num(cvar_msg_region_connect) == 0 && get_pcvar_num(cvar_msg_country_connect) == 0)) {
+		build_location(city, region, country, cvar_msg_city_connect, cvar_msg_region_connect, cvar_msg_country_connect, location, charsmax(location));
+	}
+	
 	for (new i = 0; i < num; i++) {
 		new target = players[i];
 		
-		build_location(city, region, country, cvar_msg_city_connect, cvar_msg_region_connect, cvar_msg_country_connect, location, charsmax(location));
-		
-		new steam_open[2], steam_value[32], steam_close[2];
-		new role_open[2], role_value[64], role_close[2];
+		new steam_open[4], steam_value[32], steam_close[4];
+		new role_open[4], role_value[64], role_close[4];
 		
 		steam_open[0] = steam_value[0] = steam_close[0] = EOS;
 		role_open[0] = role_value[0] = role_close[0] = EOS;
 		
 		if (get_pcvar_num(cvar_msg_steam_connect)) {
-			copy(steam_open, charsmax(steam_open), "[");
+			copy(steam_open, charsmax(steam_open), " [");
 			copy(steam_value, charsmax(steam_value), steam);
 			copy(steam_close, charsmax(steam_close), "]");
 		}
 		
 		if (role != 0 && get_pcvar_num(cvar_msg_role_connect)) {
 			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
-			copy(role_open, charsmax(role_open), "[");
+			copy(role_open, charsmax(role_open), " [");
 			copy(role_value, charsmax(role_value), role_text);
 			copy(role_close, charsmax(role_close), "]");
 		}
 
-		CC_SendMessage(target, "%L", target, "PLAYER_JOIN", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
+		// Use different LANG key based on whether all location CVARs are disabled
+		if (get_pcvar_num(cvar_msg_city_connect) == 0 && get_pcvar_num(cvar_msg_region_connect) == 0 && get_pcvar_num(cvar_msg_country_connect) == 0) {
+			CC_SendMessage(target, "%L", target, "PLAYER_JOIN_NO_LOCATION", name, steam_open, steam_value, steam_close, role_open, role_value, role_close);
+		} else {
+			CC_SendMessage(target, "%L", target, "PLAYER_JOIN", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
+		}
 	}
 	
 	// Mark the player as connected after sending the connect message
@@ -193,31 +202,40 @@ public client_disconnected(id) {
 	new players[32], num;
 	get_players(players, num, "ch"); // Ignore the bots
 	new role_text[64], location[128];
+	
+	// Build location only if at least one location CVAR is enabled
+	if (!(get_pcvar_num(cvar_msg_city_disconnect) == 0 && get_pcvar_num(cvar_msg_region_disconnect) == 0 && get_pcvar_num(cvar_msg_country_disconnect) == 0)) {
+		build_location(city, region, country, cvar_msg_city_disconnect, cvar_msg_region_disconnect, cvar_msg_country_disconnect, location, charsmax(location));
+	}
+	
 	for (new i = 0; i < num; i++) {
 		new target = players[i];
 		
-		build_location(city, region, country, cvar_msg_city_disconnect, cvar_msg_region_disconnect, cvar_msg_country_disconnect, location, charsmax(location));
-		
-		new steam_open[2], steam_value[32], steam_close[2];
-		new role_open[2], role_value[64], role_close[2];
+		new steam_open[4], steam_value[32], steam_close[4];
+		new role_open[4], role_value[64], role_close[4];
 		
 		steam_open[0] = steam_value[0] = steam_close[0] = EOS;
 		role_open[0] = role_value[0] = role_close[0] = EOS;
 		
 		if (get_pcvar_num(cvar_msg_steam_disconnect)) {
-			copy(steam_open, charsmax(steam_open), "[");
+			copy(steam_open, charsmax(steam_open), " [");
 			copy(steam_value, charsmax(steam_value), steam);
 			copy(steam_close, charsmax(steam_close), "]");
 		}
 		
 		if (role != 0 && get_pcvar_num(cvar_msg_role_disconnect)) {
 			LookupLangKey(role_text, charsmax(role_text), g_szRoleKeys[role], target);
-			copy(role_open, charsmax(role_open), "[");
+			copy(role_open, charsmax(role_open), " [");
 			copy(role_value, charsmax(role_value), role_text);
 			copy(role_close, charsmax(role_close), "]");
 		}
 		
-		CC_SendMessage(target, "%L", target, "PLAYER_LEAVE", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
+		// Use different LANG key based on whether all location CVARs are disabled
+		if (get_pcvar_num(cvar_msg_city_disconnect) == 0 && get_pcvar_num(cvar_msg_region_disconnect) == 0 && get_pcvar_num(cvar_msg_country_disconnect) == 0) {
+			CC_SendMessage(target, "%L", target, "PLAYER_LEAVE_NO_LOCATION", name, steam_open, steam_value, steam_close, role_open, role_value, role_close);
+		} else {
+			CC_SendMessage(target, "%L", target, "PLAYER_LEAVE", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
+		}
 	}
 	
 	// Reset the connection state after sending the disconnect message
