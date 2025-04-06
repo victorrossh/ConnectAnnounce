@@ -28,6 +28,8 @@ new cvar_msg_connect;
 new cvar_msg_city_disconnect, cvar_msg_region_disconnect, cvar_msg_country_disconnect, cvar_msg_steam_disconnect, cvar_msg_role_disconnect;
 new cvar_msg_disconnect;
 
+new bool:g_bIsPlayerConnected[33];
+
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
@@ -56,9 +58,13 @@ public plugin_cfg() {
 }
 
 public client_putinserver(id) { 
-	if (get_pcvar_num(cvar_msg_connect)) {
-		set_task(3.0, "CheckPlayerConnect", id + TASK_CHECK_CONNECT);
+	if (!get_pcvar_num(cvar_msg_connect)) {
+		return;
 	}
+	
+	// Reset the connection state on initial connection
+	g_bIsPlayerConnected[id] = false;
+	set_task(3.0, "CheckPlayerConnect", id + TASK_CHECK_CONNECT);
 }
 
 public CheckPlayerConnect(id) {
@@ -135,10 +141,13 @@ public CheckPlayerConnect(id) {
 
 		CC_SendMessage(target, "%L", target, "PLAYER_JOIN", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
 	}
+	
+	// Mark the player as connected after sending the connect message
+	g_bIsPlayerConnected[id] = true;
 }
 
 public client_disconnected(id) {   
-	if (is_user_bot(id) || !get_pcvar_num(cvar_msg_disconnect) || get_user_time(id) < 3) {
+	if (is_user_bot(id) || !get_pcvar_num(cvar_msg_disconnect) || !g_bIsPlayerConnected[id]) {
 		return;
 	}
 	
@@ -210,4 +219,7 @@ public client_disconnected(id) {
 		
 		CC_SendMessage(target, "%L", target, "PLAYER_LEAVE", name, location[0] ? location : "", steam_open, steam_value, steam_close, role_open, role_value, role_close);
 	}
+	
+	// Reset the connection state after sending the disconnect message
+	g_bIsPlayerConnected[id] = false;
 }
