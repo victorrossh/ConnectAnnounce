@@ -92,15 +92,8 @@ public CheckPlayerConnect(id) {
 	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
 	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
 	
-	// Check if it's Steam using Reunion (REU_GetAuthtype)
-	switch (REU_GetAuthtype(id)) {
-		case CA_TYPE_STEAM: {
-			formatex(steam, charsmax(steam), "Steam");
-		}
-		default: {
-			formatex(steam, charsmax(steam), "No-Steam");
-		}
-	}
+	// Check if it's Steam using is_user_steam (Reunion)
+	copy(steam, charsmax(steam), is_user_steam(id) ? "Steam" : "No-Steam");
 	
 	// Check player flag
 	new flags = get_user_flags(id);
@@ -179,15 +172,8 @@ public client_disconnected(id) {
 	if (region[0] == EOS) copy(region, charsmax(region), "Unknown");
 	if (country[0] == EOS) copy(country, charsmax(country), "Unknown");
 	
-	// Check if it's Steam using Reunion (REU_GetAuthtype)
-	switch (REU_GetAuthtype(id)) {
-		case CA_TYPE_STEAM: {
-			formatex(steam, charsmax(steam), "Steam");
-		}
-		default: {
-			formatex(steam, charsmax(steam), "No-Steam");
-		}
-	}
+	// Check if it's Steam using is_user_steam (Reunion)
+	copy(steam, charsmax(steam), is_user_steam(id) ? "Steam" : "No-Steam");
 	
 	// Check player flag
 	new flags = get_user_flags(id);
