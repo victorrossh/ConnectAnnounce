@@ -10,18 +10,18 @@
 
 - Displays player connection and disconnection messages in chat with a custom prefix (`[FWO]`).
 - Includes optional GeoIP-based location details (city, region, country), with optimized handling when location CVARs are disabled.
-- Detects Steam/No-Steam status using the Reunion module (`REU_GetAuthtype`).
+- Detects Steam/No-Steam status efficiently using the Reunion module (`is_user_steam`).
 - Shows player roles based on admin flags, with proper spacing for readability.
 - Fully customizable via CVARs, with separate controls for connection and disconnection messages.
 - Supports multilingual messages through a dictionary file (`connect_announce.txt`).
-- New: Uses distinct message formats (`PLAYER_JOIN_NO_LOCATION` and `PLAYER_LEAVE_NO_LOCATION`) when all location CVARs are disabled, ensuring clear and meaningful messages (e.g., "connected to the server" instead of "connected from []").
+- Uses distinct message formats (`PLAYER_JOIN_NO_LOCATION` and `PLAYER_LEAVE_NO_LOCATION`) when all location CVARs are disabled, ensuring clear and meaningful messages (e.g., "connected to the server" instead of "connected from []").
 
 ## Message Behavior
 
 The plugin now dynamically adjusts its messages based on the state of the location CVARs (`msg_city_connect`, `msg_region_connect`, `msg_country_connect` for connection, and their equivalents for disconnection):
 
 - **When at least one location CVAR is enabled**: The plugin uses the `PLAYER_JOIN` or `PLAYER_LEAVE` keys, showing the player's location if available.  
-  Example: `[FWO] ftl~ツ connected from [Santo André, São Paulo, Brazil] [Steam] [Owner]`
+  Example: `[FWO] ftl~ツ connected from [Zurich, Canton of Zurich, Switzerland] [Steam] [Owner]`
 
 - **When all location CVARs are disabled**: The plugin switches to the `PLAYER_JOIN_NO_LOCATION` or `PLAYER_LEAVE_NO_LOCATION` keys, omitting location information entirely for clarity.  
   Example: `[FWO] ftl~ツ connected to the server [Steam] [Owner].`
